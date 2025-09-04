@@ -39,7 +39,6 @@ USER app
 # Copiar configuración de Gunicorn y entrypoint
 COPY entrypoint.sh /app/entrypoint.sh
 COPY gunicorn.conf.py /app/gunicorn.conf.py
-RUN chmod +x /app/entrypoint.sh
 
 # Puerto de exposición
 EXPOSE 8000
@@ -47,4 +46,5 @@ EXPOSE 8000
 # EntryPoint y comando final
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "--config", "gunicorn.conf.py", "config.wsgi:application"]
+
 
