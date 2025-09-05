@@ -26,7 +26,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',  # ✅ CORRECTO aquí
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
 ]
 
@@ -42,8 +42,8 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",  # ✅ aquí una sola vez
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # ✅ faltaba la coma
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -76,7 +76,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default=config(
-            'postgresql://db_alcaldia_user:1yiiAZgTA9hjIwHtYONDNaHyzgEEXddy@dpg-d2sdqqndiees738p53ag-a/db_alcaldia',
+            'DATABASE_URL',
             default='postgres://postgres:bocato0731@localhost:5432/alcaldia_cordoba'
         ),
         conn_max_age=600,
@@ -138,22 +138,80 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# CORS
+# CORS - Configuración completa y mejorada
 CORS_ALLOWED_ORIGINS = [
     "https://frontend-alcaldia.onrender.com",
     "http://localhost:63342",  # WebStorm
     "http://127.0.0.1:5500",   # Live Server
-    "http://localhost:3000",   # Si luego usas React u otro
+    "http://localhost:5500",   # Live Server alternativo
+    "http://localhost:3000",   # React/Next.js
+    "http://127.0.0.1:3000",   # React/Next.js alternativo
+    "http://localhost:8000",   # Django dev server
+    "http://127.0.0.1:8000",   # Django dev server alternativo
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://frontend-alcaldia.onrender.com",  # frontend en Render
-    "https://backend-alcaldia.onrender.com",   # backend en Render
-    "http://localhost:5500",                   # pruebas locales
-]
+# Si estás en desarrollo, permitir más orígenes
+if DEBUG or not config('DATABASE_URL', default=''):
+    CORS_ALLOWED_ORIGINS.extend([
+        "http://localhost:8080",
+        "http://127.0.0.1:8080",
+        "http://localhost:4200",  # Angular
+        "http://127.0.0.1:4200",
+    ])
+
 CORS_ALLOW_CREDENTIALS = True
+
+# Headers permitidos
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'cache-control',
+    'pragma',
+]
+
+# Métodos HTTP permitidos
+CORS_ALLOWED_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# Configuración CSRF
+CSRF_TRUSTED_ORIGINS = [
+    "https://frontend-alcaldia.onrender.com",
+    "https://backend-alcaldia-5.onrender.com",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+# Headers que el navegador puede acceder
+CORS_EXPOSE_HEADERS = [
+    'content-type',
+    'x-csrftoken',
+]
 
 # Límite de archivos
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB
 ALLOWED_EXTENSIONS = ['.xlsx', '.xls']
 
+# Configuración de seguridad para producción
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
