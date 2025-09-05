@@ -23,24 +23,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código fuente
+# Copiar código fuente
 COPY . .
 
 # Crear directorios para estáticos y media
 RUN mkdir -p /app/staticfiles /app/media
 
-# Copiar entrypoint y gunicorn config, dar permisos
+# Copiar configuración de Gunicorn y entrypoint
 COPY entrypoint.sh /app/entrypoint.sh
 COPY gunicorn.conf.py /app/gunicorn.conf.py
 RUN chmod +x /app/entrypoint.sh
 
-# Crear usuario no-root y asignar permisos
+# Crear usuario no-root
 RUN useradd --create-home --shell /bin/bash app && \
     chown -R app:app /app
 USER app
 
-# Puerto interno del contenedor
+# Exponer el puerto (Render usa $PORT dinámico, pero EXPOSE es informativo)
 EXPOSE 8000
 
-# Ejecutar entrypoint que manejará $PORT de Render
+# Entrypoint maneja migraciones y Gunicorn con $PORT
 ENTRYPOINT ["/app/entrypoint.sh"]
