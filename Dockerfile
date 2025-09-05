@@ -38,7 +38,7 @@ RUN useradd --create-home --shell /bin/bash app && \
     chown -R app:app /app
 USER app
 
-EXPOSE $PORT
+EXPOSE 8000
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:$PORT", "--workers", "1", "--threads", "2"]
