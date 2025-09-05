@@ -8,7 +8,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1,backend-alcaldia-5.onrender.com'
+).split(',')
 
 # Aplicaciones
 DJANGO_APPS = [
@@ -77,7 +80,7 @@ DATABASES = {
             default='postgres://postgres:bocato0731@localhost:5432/alcaldia_cordoba'
         ),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=False
     )
 }
 
@@ -137,9 +140,15 @@ SIMPLE_JWT = {
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
+    "https://tu-frontend-en-render.com",
     "http://localhost:63342",  # WebStorm
     "http://127.0.0.1:5500",   # Live Server
     "http://localhost:3000",   # Si luego usas React u otro
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://tu-frontend-en-render.com",
+    "http://localhost:5500",  # pruebas locales
 ]
 
 CORS_ALLOW_CREDENTIALS = True
