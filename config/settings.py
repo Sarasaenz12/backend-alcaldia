@@ -10,7 +10,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,backend-alcaldia-5.onrender.com'
+    default='localhost,127.0.0.1,backend-alcaldia-5.onrender.com,frontend-alcaldia.onrender.com'
 ).split(',')
 
 # Aplicaciones
@@ -140,17 +140,17 @@ SIMPLE_JWT = {
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
-    "https://tu-frontend-en-render.com",
+    "https://frontend-alcaldia.onrender.com",
     "http://localhost:63342",  # WebStorm
     "http://127.0.0.1:5500",   # Live Server
     "http://localhost:3000",   # Si luego usas React u otro
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://tu-frontend-en-render.com",
-    "http://localhost:5500",  # pruebas locales
+    "https://frontend-alcaldia.onrender.com",  # frontend en Render
+    "https://backend-alcaldia.onrender.com",   # backend en Render
+    "http://localhost:5500",                   # pruebas locales
 ]
-
 CORS_ALLOW_CREDENTIALS = True
 
 # Límite de archivos
