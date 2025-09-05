@@ -29,4 +29,14 @@ fi
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput || true
 
-exec "$@"
+# ----------------------
+# Aquí va Gunicorn con puerto dinámico
+# ----------------------
+PORT=${PORT:-8000}  # Render asigna $PORT, si no existe usar 8000
+echo "Iniciando Gunicorn en puerto $PORT..."
+
+exec gunicorn config.wsgi:application \
+    --bind 0.0.0.0:$PORT \
+    --workers 1 \
+    --threads 2 \
+    --timeout 90
