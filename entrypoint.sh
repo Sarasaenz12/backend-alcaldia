@@ -8,7 +8,7 @@ if [ -n "$DATABASE_URL" ]; then
 import os, re
 url=os.environ.get("DATABASE_URL","")
 m=re.match(r'^\w+://[^@]+@([^:/]+)(?::(\d+))?/', url)
-print(m.group(1) if m else "")
+print(m.group(1) if m else "localhost")
 PY
 )
   DB_PORT=$(python - <<'PY'
@@ -30,13 +30,18 @@ python manage.py migrate --noinput
 python manage.py collectstatic --noinput || true
 
 # ----------------------
-# Aquí va Gunicorn con puerto dinámico
+# Gunicorn con configuración directa
 # ----------------------
-PORT=${PORT:-8000}  # Render asigna $PORT, si no existe usar 8000
+# Render asigna automáticamente la variable PORT
+PORT=${PORT:-10000}
 echo "Iniciando Gunicorn en puerto $PORT..."
 
+# Usar configuración directa en lugar del archivo gunicorn.conf.py
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:$PORT \
     --workers 1 \
-    --threads 2 \
-    --timeout 90
+    --threads 4 \
+    --timeout 120 \
+    --worker-class gthread \
+    --access-logfile - \
+    --error-logfile -
