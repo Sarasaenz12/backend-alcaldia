@@ -26,7 +26,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',  # ✅ CORRECTO aquí
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
 ]
 
@@ -43,8 +43,8 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",  # ✅ aquí una sola vez
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # ✅ faltaba la coma
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -138,19 +138,23 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# CORS
+# -------------------------------
+# 🚀 CORS CONFIG
+# -------------------------------
 CORS_ALLOWED_ORIGINS = [
     "https://frontend-alcaldia.onrender.com",
     "http://localhost:63342",  # WebStorm
     "http://127.0.0.1:5500",   # Live Server
-    "http://localhost:3000",   # Si luego usas React u otro
+    "http://localhost:3000",   # React u otro frontend
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://frontend-alcaldia.onrender.com",  # frontend en Render
-    "https://backend-alcaldia-5.onrender.com",   # backend en Render
-    "http://localhost:5500",                   # pruebas locales
+    "https://frontend-alcaldia.onrender.com",
+    "https://backend-alcaldia-5.onrender.com",
+    "http://localhost:5500",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Permitir todos los métodos comunes
 CORS_ALLOW_METHODS = [
@@ -175,8 +179,8 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
-CORS_ALLOW_CREDENTIALS = True
-
-# Límite de archivos
+# -------------------------------
+# Archivos permitidos
+# -------------------------------
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB
 ALLOWED_EXTENSIONS = ['.xlsx', '.xls']
