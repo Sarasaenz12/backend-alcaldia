@@ -148,7 +148,7 @@ CORS_ALLOWED_ORIGINS = [
 
 CSRF_TRUSTED_ORIGINS = [
     "https://frontend-alcaldia.onrender.com",  # frontend en Render
-    "https://backend-alcaldia.onrender.com",   # backend en Render
+    "https://backend-alcaldia-5.onrender.com",   # backend en Render
     "http://localhost:5500",                   # pruebas locales
 ]
 CORS_ALLOW_CREDENTIALS = True
