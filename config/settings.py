@@ -80,7 +80,7 @@ DATABASES = {
             default='postgres://postgres:bocato0731@localhost:5432/alcaldia_cordoba'
         ),
         conn_max_age=600,
-        ssl_require=False
+        ssl_require=True
     )
 }
 
