@@ -4,10 +4,12 @@ from decouple import config
 from datetime import timedelta
 import dj_database_url
 
+# Base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Seguridad
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
     default='localhost,127.0.0.1,backend-alcaldia-5.onrender.com'
@@ -26,7 +28,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',  # ✅ CORRECTO aquí
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
 ]
 
@@ -42,8 +44,8 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",  # ✅ aquí una sola vez
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # ✅ faltaba la coma
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -51,24 +53,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# URLs y WSGI
 ROOT_URLCONF = 'config.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
@@ -76,7 +62,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default=config(
-            'postgresql://db_alcaldia_user:1yiiAZgTA9hjIwHtYONDNaHyzgEEXddy@dpg-d2sdqqndiees738p53ag-a/db_alcaldia',
+            'DATABASE_URL',
             default='postgres://postgres:bocato0731@localhost:5432/alcaldia_cordoba'
         ),
         conn_max_age=600,
@@ -101,7 +87,6 @@ USE_TZ = True
 # Archivos estáticos y media
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = config('MEDIA_URL', default='/media/')
@@ -140,15 +125,15 @@ SIMPLE_JWT = {
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
-    "https://tu-frontend-en-render.com",
-    "http://localhost:63342",  # WebStorm
-    "http://127.0.0.1:5500",   # Live Server
-    "http://localhost:3000",   # Si luego usas React u otro
+    "https://tu-frontend-en-render.com",  # Cambia por tu URL de frontend
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "http://localhost:3000",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://tu-frontend-en-render.com",
-    "http://localhost:5500",  # pruebas locales
+    "http://localhost:5500",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
