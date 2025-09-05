@@ -151,6 +151,30 @@ CSRF_TRUSTED_ORIGINS = [
     "https://backend-alcaldia-5.onrender.com",   # backend en Render
     "http://localhost:5500",                   # pruebas locales
 ]
+
+# Permitir todos los métodos comunes
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+# Permitir todos los headers comunes
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Límite de archivos
