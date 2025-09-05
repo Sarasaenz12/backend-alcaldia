@@ -29,14 +29,26 @@ fi
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput || true
 
+# Crear superusuario si no existe
+echo "Verificando superusuario..."
+python manage.py shell <<'PY'
+from django.contrib.auth import get_user_model
+User = get_user_model()
+email = "admin@alcaldiacordoba.gov.co"
+password = "cordoba2025"
+if not User.objects.filter(email=email).exists():
+    User.objects.create_superuser(email=email, password=password)
+    print("Superusuario creado ✅")
+else:
+    print("Superusuario ya existe ✅")
+PY
+
 # ----------------------
 # Gunicorn con configuración directa
 # ----------------------
-# Render asigna automáticamente la variable PORT
 PORT=${PORT:-10000}
 echo "Iniciando Gunicorn en puerto $PORT..."
 
-# Usar configuración directa en lugar del archivo gunicorn.conf.py
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:$PORT \
     --workers 1 \
