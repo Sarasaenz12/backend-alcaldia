@@ -38,13 +38,13 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-# Middleware
+# Middleware - IMPORTANTE: corsheaders debe estar al principio
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -139,37 +139,53 @@ SIMPLE_JWT = {
 }
 
 # -------------------------------
-# 🚀 CORS CONFIG
+# 🚀 CONFIGURACIÓN CORS MEJORADA
 # -------------------------------
-CORS_ALLOWED_ORIGINS = [
-    "https://frontend-alcaldia.onrender.com",
-    "http://localhost:63342",  # WebStorm
-    "http://127.0.0.1:5500",   # Live Server
-    "http://localhost:3000",   # React u otro frontend
+
+# Si estás en desarrollo, permite todo
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOWED_ORIGINS = []
+else:
+    # En producción, especifica los orígenes exactos
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = [
+        "https://frontend-alcaldia.onrender.com",
+        "https://backend-alcaldia-5.onrender.com",
+    ]
+
+# Orígenes adicionales para desarrollo
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
 ]
 
+# Configuración de CSRF
 CSRF_TRUSTED_ORIGINS = [
     "https://frontend-alcaldia.onrender.com",
     "https://backend-alcaldia-5.onrender.com",
-    "http://localhost:5500",
+    "http://localhost:3000",
+    "http://127.0.0.1:5500",
 ]
 
+# Habilitar credenciales
 CORS_ALLOW_CREDENTIALS = True
 
-# Permitir todos los métodos comunes
+# Permitir todos los métodos HTTP necesarios
 CORS_ALLOW_METHODS = [
     "DELETE",
-    "GET",
+    "GET", 
     "OPTIONS",
     "PATCH",
     "POST",
     "PUT",
 ]
 
-# Permitir todos los headers comunes
+# Headers permitidos (más completo)
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",
+    "accept-language",
     "authorization",
     "content-type",
     "dnt",
@@ -177,7 +193,33 @@ CORS_ALLOW_HEADERS = [
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
+    "cache-control",
+    "pragma",
+    "x-forwarded-for",
+    "x-forwarded-proto",
 ]
+
+# Headers expuestos al cliente
+CORS_EXPOSE_HEADERS = [
+    "authorization",
+    "content-type",
+]
+
+# Tiempo de cache para preflight requests
+CORS_PREFLIGHT_MAX_AGE = 86400  # 24 horas
+
+# -------------------------------
+# CONFIGURACIONES DE SEGURIDAD ADICIONALES
+# -------------------------------
+
+# Configuraciones de seguridad para producción
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # -------------------------------
 # Archivos permitidos
