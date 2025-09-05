@@ -1,4 +1,6 @@
-#!/usr/bin/env bash set -e
+#!/bin/bash
+set -e
+
 # Esperar a la base de datos si DATABASE_URL está definido 
 if [ -n "$DATABASE_URL" ]; then 
 echo "Esperando a la base de datos..." 
