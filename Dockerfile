@@ -39,11 +39,11 @@ RUN useradd --create-home --shell /bin/bash app && \
     chown -R app:app /app
 USER app
 
-# Exponer el puerto (Render usa $PORT dinámico, pero EXPOSE es informativo)
+# Exponer el puerto
 EXPOSE 8000
 
-# Entrypoint maneja migraciones y Gunicorn con $PORT
+# Usar entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
 
-
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:${PORT:-8000}"]
+# CMD usando forma shell para permitir expansión de variables
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}
