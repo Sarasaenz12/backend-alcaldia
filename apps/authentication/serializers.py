@@ -20,7 +20,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         # Agregar información personalizada al token
         token['email'] = user.email
-        token['role'] = user.role
+        # FIX: Determinar role basado en is_superuser
+        token['role'] = 'admin' if user.is_superuser else user.role
         token['dependencia'] = user.dependencia
         token['full_name'] = user.get_full_name()
         return token
@@ -49,10 +50,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise serializers.ValidationError('Debe proporcionar email y contraseña')
 
         refresh = self.get_token(user)
+        
+        # FIX: Asegurar que el role se determine correctamente en la respuesta
+        user_data = UserSerializer(user).data
+        user_data['role'] = 'admin' if user.is_superuser else user.role
+        
         return {
             'refresh': str(refresh),
             'access': str(refresh.access_token),
-            'user': UserSerializer(user).data
+            'user': user_data
         }
 
 
