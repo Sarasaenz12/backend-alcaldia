@@ -13,7 +13,6 @@ ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
     default='localhost,127.0.0.1,backend-alcaldia-5.onrender.com,sistema-de-indicadores-alcaldia-cordoba.onrender.com'
 ).split(',')
-
 # -------------------------------
 # Aplicaciones
 # -------------------------------
