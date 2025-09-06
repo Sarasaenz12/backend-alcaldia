@@ -44,3 +44,6 @@ EXPOSE 8000
 
 # Entrypoint maneja migraciones y Gunicorn con $PORT
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:${PORT:-8000}"]
