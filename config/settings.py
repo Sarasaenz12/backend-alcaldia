@@ -8,12 +8,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
 DEBUG = config('DEBUG', default=True, cast=bool)
+
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,backend-alcaldia-5.onrender.com,frontend-alcaldia.onrender.com'
+    default='localhost,127.0.0.1,backend-alcaldia-5.onrender.com,sistema-de-indicadores-alcaldia-cordoba.onrender.com'
 ).split(',')
 
+# -------------------------------
 # Aplicaciones
+# -------------------------------
 DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,9 +41,11 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-# Middleware - IMPORTANTE: corsheaders debe estar al principio
+# -------------------------------
+# Middleware
+# -------------------------------
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",       # CORS primero
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -72,11 +77,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
+# -------------------------------
 # Base de datos
+# -------------------------------
 DATABASES = {
     'default': dj_database_url.config(
         default=config(
-            'postgresql://db_alcaldia_user:1yiiAZgTA9hjIwHtYONDNaHyzgEEXddy@dpg-d2sdqqndiees738p53ag-a/db_alcaldia',
+            'DATABASE_URL',
             default='postgres://postgres:bocato0731@localhost:5432/alcaldia_cordoba'
         ),
         conn_max_age=600,
@@ -84,7 +91,9 @@ DATABASES = {
     )
 }
 
+# -------------------------------
 # Validación de contraseñas
+# -------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -92,28 +101,33 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# -------------------------------
 # Localización
+# -------------------------------
 LANGUAGE_CODE = 'es-co'
 TIME_ZONE = 'America/Bogota'
 USE_I18N = True
 USE_TZ = True
 
+# -------------------------------
 # Archivos estáticos y media
+# -------------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = config('MEDIA_URL', default='/media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, config('MEDIA_ROOT', default='media'))
 
-# Clave primaria por defecto
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+# -------------------------------
 # Usuario personalizado
+# -------------------------------
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.CustomUser'
 
+# -------------------------------
 # Django REST Framework
+# -------------------------------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -125,7 +139,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
+# -------------------------------
 # Configuración JWT
+# -------------------------------
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=config('JWT_ACCESS_TOKEN_LIFETIME', default=60, cast=int)),
     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=config('JWT_REFRESH_TOKEN_LIFETIME', default=1440, cast=int)),
@@ -139,49 +155,43 @@ SIMPLE_JWT = {
 }
 
 # -------------------------------
-# 🚀 CONFIGURACIÓN CORS MEJORADA
+# 🚀 CONFIGURACIÓN CORS
 # -------------------------------
-
-# Si estás en desarrollo, permite todo
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
     CORS_ALLOWED_ORIGINS = []
 else:
-    # En producción, especifica los orígenes exactos
     CORS_ALLOW_ALL_ORIGINS = False
     CORS_ALLOWED_ORIGINS = [
-        "https://frontend-alcaldia.onrender.com",
-        "https://backend-alcaldia-5.onrender.com",
+        "https://sistema-de-indicadores-alcaldia-cordoba.onrender.com",  # Frontend nuevo
+        "https://backend-alcaldia-5.onrender.com",                       # Backend
     ]
 
-# Orígenes adicionales para desarrollo
+# Permitir orígenes locales
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^http://localhost:\d+$",
     r"^http://127\.0\.0\.1:\d+$",
 ]
 
-# Configuración de CSRF
+# CSRF
 CSRF_TRUSTED_ORIGINS = [
-    "https://frontend-alcaldia.onrender.com",
+    "https://sistema-de-indicadores-alcaldia-cordoba.onrender.com",
     "https://backend-alcaldia-5.onrender.com",
     "http://localhost:3000",
     "http://127.0.0.1:5500",
 ]
 
-# Habilitar credenciales
 CORS_ALLOW_CREDENTIALS = True
 
-# Permitir todos los métodos HTTP necesarios
 CORS_ALLOW_METHODS = [
     "DELETE",
-    "GET", 
+    "GET",
     "OPTIONS",
     "PATCH",
     "POST",
     "PUT",
 ]
 
-# Headers permitidos (más completo)
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",
@@ -195,24 +205,18 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
     "cache-control",
     "pragma",
-    "x-forwarded-for",
-    "x-forwarded-proto",
 ]
 
-# Headers expuestos al cliente
 CORS_EXPOSE_HEADERS = [
     "authorization",
     "content-type",
 ]
 
-# Tiempo de cache para preflight requests
-CORS_PREFLIGHT_MAX_AGE = 86400  # 24 horas
+CORS_PREFLIGHT_MAX_AGE = 86400
 
 # -------------------------------
-# CONFIGURACIONES DE SEGURIDAD ADICIONALES
+# Seguridad adicional en producción
 # -------------------------------
-
-# Configuraciones de seguridad para producción
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
