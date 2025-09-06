@@ -67,5 +67,5 @@ print('Script de creación de admin completado.')
 # Recopilar archivos estáticos
 python manage.py collectstatic --noinput
 
-# Iniciar el servidor
-exec "$@"
+# Iniciar el servidor en el puerto que Render proporciona
+python manage.py runserver 0.0.0.0:$PORT
