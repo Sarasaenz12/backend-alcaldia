@@ -42,8 +42,5 @@ USER app
 # Exponer el puerto
 EXPOSE 8000
 
-# Usar entrypoint
+# Solo usar entrypoint, él manejará todo
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-# CMD usando forma shell para permitir expansión de variables
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}
